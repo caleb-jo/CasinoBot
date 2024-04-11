@@ -1,0 +1,12 @@
+
+oauth2_link
+https://discord.com/oauth2/authorize?client_id=1227774968440422430&permissions=1084479764544&scope=bot
+
+
+
+discord_install_link
+https://discord.com/oauth2/authorize?client_id=1227774968440422430
+
+
+client ID
+1227774968440422430
