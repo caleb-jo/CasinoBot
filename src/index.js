@@ -7,6 +7,11 @@ const fs = require('fs');
 const SLOTS = require('./games/slots');
 const ROULETTE = require('./games/roulette');
 
+// FILES
+const TOKENFILE = './token/token.txt';
+const USERBALANCEFILE = './token/json/userbalance.json';
+
+
 
 let DiscordBotToken;
 let ReplyMessage;
@@ -27,20 +32,52 @@ const client = new Client({
 
 //PUT TOKEN IN TEXT FILE BY ITSELF
 function GetToken(callback) {
-    fs.readFile('token/token.txt', 'utf-8', function GetFileContent(err, data) {
+    fs.readFile(TOKENFILE, 'utf-8', function GetFileContent(err, data) {
         if (err) {
             console.error(err);
             return;
         }
         DiscordBotToken = data;
-        callback()
+        callback();
     })
 }
+
+function Balances(state, userid='', amount=0) {
+    if (state == READ){
+        fs.readFile(USERBALANCEFILE, 'utf-8', function GetFileContent(err, data) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            UserBalances = data;
+            console.log(JSON.parse(data));
+        })
+    }
+}
+
+
+function UpdateBalance(userid=0, amount=0) {
+    fs.readFile(USERBALANCEFILE, function (err, data) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        var json = JSON.parse(data);
+        json.push({[userid]: amount});
+        console.log(json.keys());
+        fs.writeFile(USERBALANCEFILE, JSON.stringify(json), function(err){
+          if (err) throw err;
+          console.log('The "data to append" was appended to file!');
+        });
+    })
+}
+
 
 function ClientLogin() {
     client.login(DiscordBotToken);
     return
 }
+
 
 function ParseMessage(message) {
 
@@ -133,6 +170,8 @@ client.on('messageCreate', (message) => {
 //LOGIN
 
 LoginDiscordBot = GetToken(ClientLogin);
+
+UpdateBalance("F", -500);
 
 
 
