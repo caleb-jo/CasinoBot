@@ -1,5 +1,5 @@
 
-const {Client, IntentsBitField} = require('discord.js');
+const {Client, IntentsBitField, NewsChannel} = require('discord.js');
 const fs = require('fs');
 
 
@@ -19,7 +19,6 @@ let IsHelpRequest;
 let UserMessage;
 
 
-
 const client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds,
@@ -27,7 +26,7 @@ const client = new Client({
         IntentsBitField.Flags.GuildMessages,
         IntentsBitField.Flags.MessageContent,
     ]
-})
+});
 
 
 //PUT TOKEN IN TEXT FILE BY ITSELF
@@ -42,6 +41,7 @@ function GetToken(callback) {
     })
 }
 
+/*
 function Balances(state, userid='', amount=0) {
     if (state == READ){
         fs.readFile(USERBALANCEFILE, 'utf-8', function GetFileContent(err, data) {
@@ -54,22 +54,55 @@ function Balances(state, userid='', amount=0) {
         })
     }
 }
+*/
 
-
+// interacts with USERBALANCEFILE to update user balances, adds new users to userbalance.json (gives 1,000,000)
 function UpdateBalance(userid=0, amount=0) {
     fs.readFile(USERBALANCEFILE, function (err, data) {
         if (err) {
             console.error(err);
             return;
         }
-        var json = JSON.parse(data);
-        json.push({[userid]: amount});
-        console.log(json.keys());
-        fs.writeFile(USERBALANCEFILE, JSON.stringify(json), function(err){
-          if (err) throw err;
-          console.log('The "data to append" was appended to file!');
+
+        Json = JSON.parse(data);
+
+        JsonKeys = Object.keys(Json);
+
+
+        let CurrentBalance;
+        let NewBalance;
+
+        if (!JsonKeys.includes(userid)) {
+            console.log("a new addict >:)");
+            CurrentBalance = 1000000;            
+        }
+        else {
+            CurrentBalance = Json[userid];
+        }
+
+
+        NewBalance = CurrentBalance + amount;
+
+        Json[userid] = NewBalance;
+
+
+        // user is not in object, do this:
+        
+        console.log(JsonKeys);
+
+        Json = JSON.stringify(Json);
+        
+        
+
+        fs.writeFile(USERBALANCEFILE, Json, (err) => {
+            if (err) {6
+                console.error(err);
+                return;
+            }
         });
-    })
+
+
+    });
 }
 
 
@@ -171,7 +204,6 @@ client.on('messageCreate', (message) => {
 
 LoginDiscordBot = GetToken(ClientLogin);
 
-UpdateBalance("F", -500);
 
 
 
