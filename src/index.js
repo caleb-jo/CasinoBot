@@ -191,7 +191,7 @@ client.on('messageCreate', (message) => {
     }
 
     let BeginningOfMessage = message.content.slice(0,7);
-    if (BeginningOfMessage == '!gamble') {
+    if (BeginningOfMessage === '!gamble') {
         ReplyMessage = '';
         ParseMessage(message);
     }
