@@ -10,16 +10,19 @@ let Screen = [];
 //let Wheel;
 
 const SYMBOLMULTIPLIERS = [
-    [':first_place:',         30], //0
-    [':bell:',                28],
-    [':crown:',               26],
-    [':money_mouth_face:',    24],
-    [':checkered_flag:',      22],
-    [':fleur_de_lis:',        20],
-    [':infinity:',            18],
-    [':star:',                16],
-    [':heart_on_fire:',       14],
-    [':smiling_imp:',         12],
+    [':first_place:',         15000], //0
+    [':bell:',                10000],
+    [':crown:',               8000],
+    [':money_mouth_face:',    8000],
+    [':checkered_flag:',      5000],
+    [':fleur_de_lis:',        5000],
+    [':infinity:',            5000],
+    [':star:',                3000],
+    [':heart_on_fire:',       3000],
+    [':smiling_imp:',         3000], // 9
+    
+
+/*
     [':tv:',                  10],
     [':pig:',                  8],
     [':santa:',                6], //12
@@ -218,7 +221,7 @@ module.exports = {
 
         ResponseMessage = ReformatArrayForResponseMessage(Screen);
     
-        
+        return [IsAWinner, BalanceAdjustment, ResponseMessage];
         
 
 
