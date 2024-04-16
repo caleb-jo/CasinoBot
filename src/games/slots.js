@@ -118,12 +118,28 @@ function SpinWheel(List) {
 
 
 function CheckIfLineIsWinning(Wheel, index) {
-    let IsWinning = true;
-    let GoodValue;
+    let WinningLines = [];
+    let IsWinning, WinningLine;
+
+    for (let pos=0; pos < 5; pos++) {
+        IsWinning, WinningLine = Screen.every(
+            (Wheel) => {
+                let GoodValue = Screen[0][pos][0];
+                let CurrentValue = Wheel[pos][0];
+                return CurrentValue === GoodValue, Screen[0][pos];
+            }
+        )
+        console.log()
+        WinningLines.push(WinningLine);
+
+    }
+
+
+
 
     
     
-    return true;
+    return IsWinning, WinningLines;
 
 }
 
@@ -157,16 +173,8 @@ module.exports = {
             Screen.push(CreateWheel());
         }
 
-        ScreenAsLines = MakeWheelsIntoLines(Screen);
-
-        CheckIfLineIsWinning(ScreenAsLines);
-
-        for(Line of ScreenAsLines) {
-
-            console.log(Line);
-            if (Line.every( (Pos) => {if(Line[Pos] === Line[0]){return true}})) {
-                console.log(`Line ${Line+1} is a WINNER!`);
-            }
+        let IsScreenWinning, WinningLinesList = CheckIfLineIsWinning(Screen);
+        console.log(IsScreenWinning, WinningLinesList);
 
         }
 
@@ -198,4 +206,3 @@ module.exports = {
             }
         }
 */
-}
