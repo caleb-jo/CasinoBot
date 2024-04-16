@@ -10,36 +10,29 @@ let Screen = [];
 //let Wheel;
 
 const SYMBOLMULTIPLIERS = [
-    [':first_place:', 5], //0
-    [':first_place:', 5], //0
-    [':first_place:', 5], //0
-    [':first_place:', 5], //0
-    [':first_place:', 5], //0
-
-    /*
-    [':bell:', 3],
-    [':crown:', 3],
-    [':money_mouth_face:', 2],
-    [':checkered_flag:', 2],
-    */
+    [':first_place:',         30], //0
+    [':bell:',                28],
+    [':crown:',               26],
+    [':money_mouth_face:',    24],
+    [':checkered_flag:',      22],
+    [':fleur_de_lis:',        20],
+    [':infinity:',            18],
+    [':star:',                16],
+    [':heart_on_fire:',       14],
+    [':smiling_imp:',         12],
+    [':tv:',                  10],
+    [':pig:',                  8],
+    [':santa:',                6], //12
 
 
 /*
-    [':fleur_de_lis:', 1.5],
-    [':infinity:', 1.5],
-    [':star:', 1.5],
-    [':heart_on_fire:', 1.25],
-    [':smiling_imp:', 1.25],
-    [':tv:', 1.1],
-    [':pig:', 1],
-    [':santa:', 1],
-    [':moyai:', 1],
-    [':battery:', 1],
-    [':money_with_wings:', 0.5],
-    [':apple:', 0.5],
-    [':poop:', 0.5],
-    [':rocket:', 0.25],
-    [':baseball:', 0.25], //19
+    [':moyai:',                5],
+    [':battery:',              5],
+    [':money_with_wings:',     5],
+    [':apple:',                5],
+    [':poop:',                 5],
+    [':rocket:',               5],
+    [':baseball:',             5], //19
 */
 ];
 
@@ -117,70 +110,121 @@ function SpinWheel(List) {
 }
 
 
-function CheckIfLineIsWinning(Wheel, index) {
+function CheckIfLineIsWinning(LineFlags) {
     let WinningLines = [];
-    let IsWinning, WinningLine;
+    let IsWinning;
+    let WinningMultipliers = [];
 
-    for (let pos=0; pos < 5; pos++) {
-        IsWinning, WinningLine = Screen.every(
+
+
+    for (pos in LineFlags) {
+        IsWinning = Screen.every(
             (Wheel) => {
                 let GoodValue = Screen[0][pos][0];
                 let CurrentValue = Wheel[pos][0];
-                return CurrentValue === GoodValue, Screen[0][pos];
+                return CurrentValue === GoodValue;
             }
         )
-        console.log()
-        WinningLines.push(WinningLine);
-
-    }
-
-
-
-
-    
-    
-    return IsWinning, WinningLines;
-
-}
-
-
-
-
-function MakeWheelsIntoLines(Screen) {
-
-    let LinesArray = [];
-    let LinesList = [];
-
-    for (let Wheel = 0; Wheel < 5; Wheel++) {
-        for (let Position = 0; Position < 5; Position++) {
-            LinesList.push(Screen[Position][Wheel]);
+        if (IsWinning) {
+            // console.log(IsWinning, pos);
+            WinningLines.push(Number(pos)+1);
+            WinningMultipliers.push(Screen[0][pos][1]);
         }
-        LinesArray.push(LinesList);
-        LinesList = [];
+        
     }
     
-    return LinesArray;
-}
-    
+    return [WinningMultipliers, WinningLines];
 
+}
+
+function GenerateLineFlags(LineCount) {
+    let LineFlags = [];
+    switch(LineCount) {
+        case 1: LineFlags = [2];         break;
+        case 2: LineFlags = [0,2];       break;
+        case 3: LineFlags = [0,2,4];     break;
+        case 4: LineFlags = [0,1,2,4];   break;
+        case 5: LineFlags = [0,1,2,3,4]; break;
+    }
+
+    return LineFlags
+}
+
+function CalculateBalanceAdjustment(BetPerLine, LineCount, MultiplierList) {
+    let Adjustment = 0;
+    
+    for (Multiplier of MultiplierList) {
+        Adjustment += (BetPerLine * Multiplier);
+    }
+
+    let MissedLines = LineCount - MultiplierList.length;
+    Adjustment -= (BetPerLine * MissedLines);
+
+    return Adjustment;
+}
+
+function ReformatArrayForResponseMessage(array){
+    let width = array.length;
+    let height = array[0].length;
+    let OutputMessage = 'Trusty and Reliable Slot Machine!\n------------------------\n';
+
+
+
+    for (let w = 0; w < width; w++){
+        for (let h = 0; h < height; h++) {
+            if (h === 0) {
+                OutputMessage += '[-'
+            }
+            OutputMessage += String(array[h][w][0]);
+            OutputMessage += '-';
+            if (h === height-1) {
+                OutputMessage += ']';
+            }
+        }
+        OutputMessage += '\n------------------------\n';
+    }
+
+    return OutputMessage;
+
+}
 
 module.exports = {
-    play: function() {
-        console.log('playing slots');
+    play: function(Wager, LineCount) {
+
+        let IsAWinner = false;
+        let BalanceAdjustment = 1;
+        let ResponseMessage = '';
+
+        // console.log('playing slots');
         Screen = [];
+        let WinningMultipliersList = [];
+        let WinningLinesList = [];
         
         for (let index = 0; index < 5; index++){
             Screen.push(CreateWheel());
         }
 
-        let IsScreenWinning, WinningLinesList = CheckIfLineIsWinning(Screen);
-        console.log(IsScreenWinning, WinningLinesList);
+        [WinningMultipliersList, WinningLinesList] = CheckIfLineIsWinning(GenerateLineFlags(LineCount));
+        // console.log(`WinningMultipliersList`);
 
+        if (WinningLinesList.length) {
+            IsAWinner = true;
+            BalanceAdjustment = CalculateBalanceAdjustment(Wager, LineCount, WinningMultipliersList);
+        }
+        else {
+            IsAWinner = false;
+            BalanceAdjustment = 0 - (Wager * LineCount);
         }
 
-
-        }
+        ResponseMessage = ReformatArrayForResponseMessage(Screen);
+    
         
+        
+
+
+    }
+        
+}
         // console.log(`SCREEN: ${Screen}`);
         // console.log(ScreenAsLines.every(CheckIfLineIsWinning));
 
