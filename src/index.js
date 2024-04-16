@@ -171,7 +171,7 @@ function ParseMessage(message) {
     if (IsHelpRequest) {
         switch(IsHelpRequest[0]) {
             case '--help':
-                ReplyMessage = 'Welcome to CasinoBot! I am here to serve all your gambling and ATM needs from the comfort of your discord server. Use --balance to see your current balance!\n\nList of Games:\nSlots: "!gamble slots {amount to wager} {number of lines (1-5)}"\n Wager amount is multiplied by number of lines.\n\nRoulette: "!gamble roulette {amount to wager} {"red", "black"}\n\nHappy Hunting!';
+                ReplyMessage = 'Welcome to CasinoBot! I am here to serve all your gambling needs from the comfort of your discord server. Use --balance to see your current balance!\n\nList of Games:\nSlots: "!gamble slots {amount to wager} {number of lines (1-5)}"\n Wager amount is multiplied by number of lines.\n\nRoulette: "!gamble roulette {amount to wager} {"red", "black"}\n\nHappy Hunting!';
                 message.reply(ReplyMessage);
                 break;
             case '--balance':
@@ -188,7 +188,7 @@ function SendResponseMessage(WonGame, AmountDifference) {
     AmountDifference = Math.abs(AmountDifference);
 
     if (WonGame) {
-        ReplyMessage += `\n\nCongratulations! You won the game! You won $${AmountDifference}! Keep the streak alive!`
+        ReplyMessage += `\n\nCongratulations! You won the game! You have received $${AmountDifference}! Keep the streak alive!`
         // console.log(ReplyMessage);
     }
     else {
@@ -242,6 +242,8 @@ function SelectGame(Words, Numbers, Gambler) {
             [HasWonTheGame, AmountDifference, AddToMessage] = ROULETTE.play(Wager, Color);
 
             ReplyMessage += AddToMessage;
+
+            UpdateBalance(Gambler, AmountDifference);
 
             SendResponseMessage(HasWonTheGame, AmountDifference);
             break;
