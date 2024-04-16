@@ -11,16 +11,18 @@ let Screen = [];
 
 const SYMBOLMULTIPLIERS = [
     [':first_place:', 5], //0
-    [':first_place:', 5],
-    [':first_place:', 5],
-    [':first_place:', 5],
-    [':first_place:', 5],
-/*
+    [':first_place:', 5], //0
+    [':first_place:', 5], //0
+    [':first_place:', 5], //0
+    [':first_place:', 5], //0
+
+    /*
     [':bell:', 3],
     [':crown:', 3],
     [':money_mouth_face:', 2],
     [':checkered_flag:', 2],
-*/
+    */
+
 
 /*
     [':fleur_de_lis:', 1.5],
@@ -114,23 +116,12 @@ function SpinWheel(List) {
     */
 }
 
-let GoodValue;
+
 function CheckIfLineIsWinning(Wheel, index) {
     let IsWinning = true;
+    let GoodValue;
 
-    for (let Position = 0; Position < 5; Position++){
-        if (index === 0){
-            GoodValue = Screen[index][Position];
-            // console.log(`FirstGoodValue: ${GoodValue}`);
-        }
-        
-        // console.log(`Wheel Position: ${Wheel[Position]} , index: ${index}`);
-        // console.log(`GoodValue: ${GoodValue} , index: ${index}`)
-        IsWinning = (Wheel[Position] === GoodValue);
-        if (!IsWinning) {
-            return false;
-        }
-    }
+    
     
     return true;
 
@@ -139,56 +130,48 @@ function CheckIfLineIsWinning(Wheel, index) {
 
 
 
-function MakeWheelsIntoLines(array) {
+function MakeWheelsIntoLines(Screen) {
 
     let LinesArray = [];
-    for (list in array) {
-        let LinesList = []
-        for (item in list) {
-            LinesList.push[item];
+    let LinesList = [];
+
+    for (let Wheel = 0; Wheel < 5; Wheel++) {
+        for (let Position = 0; Position < 5; Position++) {
+            LinesList.push(Screen[Position][Wheel]);
         }
         LinesArray.push(LinesList);
+        LinesList = [];
     }
+    
     return LinesArray;
 }
-
-function CheckIfLineIsWinning2(Line) {
-    for (let Position = 0; Position < 5; Position++) {
-        if (Position === 0){
-            GoodValue = Line[Position];
-            console.log(`FirstGoodValue: ${GoodValue}`);
-        }
-    }
-}
-
+    
 
 
 module.exports = {
     play: function() {
         console.log('playing slots');
+        Screen = [];
         
         for (let index = 0; index < 5; index++){
             Screen.push(CreateWheel());
         }
 
-        let IsWinning = true;
-        for (pos=0; pos < 5; pos++) {
-        IsWinning = Screen.every( (Wheel) => {
-            console.log("Current");
-            console.log(Wheel[pos]);
-            console.log("Good Value");
-            console.log(Screen[0][pos]);
-            console.log(Wheel[pos] === Screen[0][pos]);
-
-            // console.log(`Current: ${Wheel[pos]} Good Value: ${Screen[0][pos]}`);
-            return Wheel[pos] === Screen[0][pos]; //only have to check against first
-        });
-}
-        console.log(IsWinning);
-          
-
-            
         ScreenAsLines = MakeWheelsIntoLines(Screen);
+
+        CheckIfLineIsWinning(ScreenAsLines);
+
+        for(Line of ScreenAsLines) {
+
+            console.log(Line);
+            if (Line.every( (Pos) => {if(Line[Pos] === Line[0]){return true}})) {
+                console.log(`Line ${Line+1} is a WINNER!`);
+            }
+
+        }
+
+
+        }
         
         // console.log(`SCREEN: ${Screen}`);
         // console.log(ScreenAsLines.every(CheckIfLineIsWinning));
@@ -215,5 +198,4 @@ module.exports = {
             }
         }
 */
-    },
 }
