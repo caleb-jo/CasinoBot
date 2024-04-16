@@ -14,9 +14,14 @@ const SYMBOLMULTIPLIERS = [
     [':bell:',                10000],
     [':crown:',               8000],
     [':money_mouth_face:',    8000],
-    [':checkered_flag:',      5000],
-    [':fleur_de_lis:',        5000],
-    [':infinity:',            5000],
+    [':checkered_flag:',      5000], //4
+/*
+    [':fleur_de_lis:',        5000], //5
+
+/*
+    [':infinity:',            5000], 
+
+/*
     [':star:',                3000],
     [':heart_on_fire:',       3000],
     [':smiling_imp:',         3000], // 9
