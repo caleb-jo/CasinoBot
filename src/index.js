@@ -248,7 +248,7 @@ function SelectGame(Words, Numbers, Gambler) {
         // template input message !gamble roulette {Wager} {color(red/black)}
             Color = Words[1];
 
-            if (!(Color in ['red', 'black'])) {
+            if (!(['red','black'].includes(Color))) {
                 console.log('invalid roulette choice');
                 ReplyMessage = "Invalid choice. Please choose either red or black. Use --help for more information.";
                 UserMessage.reply(ReplyMessage);
