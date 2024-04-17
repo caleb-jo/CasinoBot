@@ -8,8 +8,8 @@ const SLOTS = require('./games/slots');
 const ROULETTE = require('./games/roulette');
 
 // FILES
-const TOKENFILE = './token/token.txt';
-const USERBALANCEFILE = './token/json/userbalance.json';
+const TOKENFILE = '../token/token.txt';
+const USERBALANCEFILE = '../token/json/userbalance.json';
 
 
 
