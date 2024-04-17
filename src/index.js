@@ -8,8 +8,8 @@ const SLOTS = require('./games/slots');
 const ROULETTE = require('./games/roulette');
 
 // FILES
-const TOKENFILE = '../token/token.txt';
-const USERBALANCEFILE = '../token/json/userbalance.json';
+const TOKENFILE = './token/token.txt';
+const USERBALANCEFILE = './token/json/userbalance.json';
 
 
 
@@ -236,8 +236,13 @@ function SelectGame(Words, Numbers, Gambler) {
             break;
         case 'roulette':
         // template input message !gamble roulette {Wager} {color(red/black)}
-
             Color = Words[1];
+            
+            if (!Color in ['red', 'black']) {
+                ReplyMessage = "Invalid choice. Please choose either red or black. Use --help for more information.";
+                UserMessage.reply(ReplyMessage);
+                return;
+            }
 
             [HasWonTheGame, AmountDifference, AddToMessage] = ROULETTE.play(Wager, Color);
 
