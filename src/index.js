@@ -151,7 +151,7 @@ function ClientLogin() {
 function ParseMessage(message) {
 
     let Gambler, Game;
-    // Game: game played (slots, roulette, etc...), Wager: amount bet on game
+    // Gambler: current user; Game: game played (slots, roulette, etc...)
 
     CoreMessage = message.content.slice(8, 100); //remove !gamble from beginning of message
     // console.log(`Message received: ${CoreMessage}`);
@@ -205,13 +205,23 @@ function SelectGame(Words, Numbers, Gambler) {
     let AmountDifference = 0;
     let Wager;
 
-    if (Numbers){
-        Wager = Number(Numbers[0]); //wager is always first number
-    }
+    
+
 
 
     if (Words) {
         let FirstWord = Words[0];
+        //console.log(FirstWord);
+
+        if (Numbers){
+            Wager = Number(Numbers[0]); //wager is always first number
+        }
+        else {
+            ReplyMessage = 'Use --help for more information.';
+            UserMessage.reply(ReplyMessage);
+            return;
+        }
+
     
     switch(FirstWord) {
         case 'slots':
@@ -237,8 +247,9 @@ function SelectGame(Words, Numbers, Gambler) {
         case 'roulette':
         // template input message !gamble roulette {Wager} {color(red/black)}
             Color = Words[1];
-            
-            if (!Color in ['red', 'black']) {
+
+            if (!(Color in ['red', 'black'])) {
+                console.log('invalid roulette choice');
                 ReplyMessage = "Invalid choice. Please choose either red or black. Use --help for more information.";
                 UserMessage.reply(ReplyMessage);
                 return;
@@ -251,9 +262,12 @@ function SelectGame(Words, Numbers, Gambler) {
             UpdateBalance(Gambler, AmountDifference);
 
             SendResponseMessage(HasWonTheGame, AmountDifference);
-            break;
-    
+            break;    
         }
+    }
+    else {
+        ReplyMessage = 'Send !gamble --help for more information';
+        UserMessage.reply(ReplyMessage);
     }
 }
 
