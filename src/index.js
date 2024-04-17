@@ -156,13 +156,13 @@ function ParseMessage(message) {
     CoreMessage = message.content.slice(8, 100); //remove !gamble from beginning of message
     // console.log(`Message received: ${CoreMessage}`);
     
+    CoreMessage = CoreMessage.replace(/—/, "--");
+
+    
     // .match function returns list
     IsHelpRequest = CoreMessage.match(/--[a-z]+/g); //search for collection of letters proceeding "--"
     let Numbers = CoreMessage.match(/\d+/g); //search for col. of nums
     let Words = CoreMessage.match(/([a-z]+)/g); //search for col. of letters
-
-    IsHelpRequest[0].replace("—", "--")
-
 
     Gambler = message.author.id;
 
