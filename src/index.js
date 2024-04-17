@@ -163,23 +163,25 @@ function ParseMessage(message) {
 
 
     Gambler = message.author.id;
-    
-
-    Game = SelectGame(Words, Numbers, Gambler);
-
 
     if (IsHelpRequest) {
         switch(IsHelpRequest[0]) {
+            case '—help':
             case '--help':
                 ReplyMessage = 'Welcome to CasinoBot! I am here to serve all your gambling needs from the comfort of your discord server. Use --balance to see your current balance!\n\nList of Games:\nSlots: "!gamble slots {amount to wager} {number of lines (1-5)}"\n Wager amount is multiplied by number of lines.\n\nRoulette: "!gamble roulette {amount to wager} {"red", "black"}\n\nHappy Hunting!';
                 message.reply(ReplyMessage);
-                break;
+                return;
+            case '—balance':
             case '--balance':
                 GetNewBalance(Gambler);
+                return;
                 // console.log('getting balance');
         } // need to exit this/provide catch all?
         
-    }
+    };
+    
+    Gambler = message.author.id;
+    Game = SelectGame(Words, Numbers, Gambler);
 
     return;
 }
