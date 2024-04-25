@@ -171,7 +171,7 @@ function CalculateBalanceAdjustment(BetPerLine, LineCount, MultiplierList) {
 function ReformatArrayForResponseMessage(array){
     let width = array.length;
     let height = array[0].length;
-    let OutputMessage = 'Trusty and Reliable Slot Machine!\n------------------------\n';
+    let OutputMessage = 'Big Winnings Slot Machine!\n------------------------\n';
 
 
 
@@ -224,9 +224,6 @@ module.exports = {
         ResponseMessage = ReformatArrayForResponseMessage(Screen);
     
         return [IsAWinner, BalanceAdjustment, ResponseMessage];
-        
-
-
     }
         
 }
