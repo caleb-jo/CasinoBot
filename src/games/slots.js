@@ -41,30 +41,6 @@ const SYMBOLMULTIPLIERS = [
     //[':baseball:',              5],
 ];
 
-/*
-let EmojiList = [
-    ':heart_on_fire:',
-    ':fleur_de_lis:',
-    ':infinity:',
-    ':checkered_flag:',
-    ':tv:',
-    ':moyai:',
-    ':bell:',
-    ':battery:',
-    ':money_with_wings:',
-    ':rocket:',
-    ':first_place:',
-    ':baseball:',
-    ':apple:',
-    ':star:',
-    ':pig:',
-    ':crown:',
-    ':santa:',
-    ':poop:',
-    ':smiling_imp:',
-    ':money_mouth_face:',
-]
-*/
 
 function GetRandomInt(min, max) {
     return Math.floor(Math.random() * max) + min;
@@ -227,28 +203,3 @@ module.exports = {
     }
         
 }
-        // console.log(`SCREEN: ${Screen}`);
-        // console.log(ScreenAsLines.every(CheckIfLineIsWinning));
-
-        /*
-        for (Line in ScreenAsLines) {
-            IsLineWinning = CheckIfLineIsWinning2(Line);
-            console.log(IsLineWinning);
-        }
-        */
-        
-
-        
-
-
-
-/*
-        for (let Position = 0; Position < 5; Position++){
-            
-            for(let Wheel = 0; Wheel < 5; Wheel++){
-                
-
-                // is Screen[Wheel][Position] == all Screen[Wheel][Position]
-            }
-        }
-*/
