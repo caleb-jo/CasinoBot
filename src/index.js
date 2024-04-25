@@ -19,36 +19,6 @@ let UserMessage; // global for message object
 
 
 
-
-
-function GetNewBalance(Gambler) {
-    fs.readFile(USERBALANCEFILE, function (err, data) {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        
-        // parse data for json info and list keys (users in this case)
-        Json = JSON.parse(data);
-
-        JsonKeys = Object.keys(Json);
-
-        // in case of new user, initialize balance to 1,000,000
-        // else get value
-        if (!JsonKeys.includes(Gambler.id)) {
-            CurrentBalance = 1000000;
-        }
-        else {
-            CurrentBalance = Json[Gambler.id];
-        }
-        UserBalance = CurrentBalance;
-        ReplyMessage = `Hey ${Gambler}, you have ${UserBalance} in your bank account.`
-        UserMessage.reply(ReplyMessage);
-        UserBalance = 0; 
-    });
-
-};
-
 // interacts with USERBALANCEFILE to update user balances, adds new users to userbalance.json (gives 1,000,000)
 // update balance takes message.author.id as userid and amount gained/lost from bet
 function UpdateBalance(user, amount=0) {
