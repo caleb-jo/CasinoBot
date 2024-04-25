@@ -1,61 +1,25 @@
 
+// PACKAGES
 const {Client, IntentsBitField, NewsChannel} = require('discord.js');
 const fs = require('fs');
 
 
-// GAMES
+// MODULES (GAMES)
 const SLOTS = require('./games/slots');
 const ROULETTE = require('./games/roulette');
 
 // FILES
-const TOKENFILE = './token/token.txt';
+const TOKENFILE = './token/test-token.txt';
 const USERBALANCEFILE = './token/json/userbalance.json';
 
 
 
 let DiscordBotToken; // for data from TOKENFILE
 let ReplyMessage;  // global for constructed response message
-let IsHelpRequest; // move this to ParseMessage?
 let UserMessage; // global for message object
 let UserBalance; //global for user balance
 
-// client object has permissions (intents)
-const client = new Client({
-    intents: [
-        IntentsBitField.Flags.Guilds,
-        IntentsBitField.Flags.GuildMembers,
-        IntentsBitField.Flags.GuildMessages,
-        IntentsBitField.Flags.MessageContent,
-    ]
-});
 
-
-//PUT TOKEN IN TEXT FILE BY ITSELF
-function GetToken(callback) {
-    fs.readFile(TOKENFILE, 'utf-8', function GetFileContent(err, data) {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        DiscordBotToken = data;
-        callback();
-    })
-}
-
-/*
-function Balances(state, userid='', amount=0) {
-    if (state == READ){
-        fs.readFile(USERBALANCEFILE, 'utf-8', function GetFileContent(err, data) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-            UserBalances = data;
-            console.log(JSON.parse(data));
-        })
-    }
-}
-*/
 
 function GetNewBalance(Gambler) {
     fs.readFile(USERBALANCEFILE, function (err, data) {
@@ -142,51 +106,23 @@ function UpdateBalance(userid=0, amount=0) {
     return;
 }
 
-// callback for GetToken, gives login token to client once it is read from file
-function ClientLogin() {
-    client.login(DiscordBotToken);
-    return
-}
 
 function ParseMessage(message) {
-
-    let Gambler, Game;
-    // Gambler: current user; Game: game played (slots, roulette, etc...)
+// message = String
+// returns list of message phrases and cuts !gamble from front e.g. "!gamble roulette 500 black" --> ["roulette", 500, "black"], "!gamble --help roulette" --> ["--help", "roulette"]
 
     CoreMessage = message.content.slice(8, 100); //remove !gamble from beginning of message
     // console.log(`Message received: ${CoreMessage}`);
-    
-    CoreMessage = CoreMessage.replace(/—/, "--");
 
     
-    // .match function returns list
-    IsHelpRequest = CoreMessage.match(/--[a-z]+/g); //search for collection of letters proceeding "--"
-    let Numbers = CoreMessage.match(/\d+/g); //search for col. of nums
-    let Words = CoreMessage.match(/([a-z]+)/g); //search for col. of letters
+    // .match function returns list, regex more "resilient" than splitting on spaces
+    CoreMessage = CoreMessage.replace('—','--')
+    let Phrases = CoreMessage.match(/(--|)([a-zA-Z0-9]+)/g);
 
-    Gambler = message.author.id;
-
-    if (IsHelpRequest) {
-        switch(IsHelpRequest[0]) {
-            case '--help':
-                ReplyMessage = 'Welcome to CasinoBot! I am here to serve all your gambling needs from the comfort of your discord server. Use --balance to see your current balance!\n\nList of Games:\nSlots: "!gamble slots {amount to wager} {number of lines (1-5)}"\n Wager amount is multiplied by number of lines.\n\nRoulette: "!gamble roulette {amount to wager} {"red", "black"}\n\nHappy Hunting!';
-                message.reply(ReplyMessage);
-                return;
-            case '--balance':
-                GetNewBalance(Gambler);
-                return;
-                // console.log('getting balance');
-        } // need to exit this/provide catch all?
-        
-    };
-    
-    Gambler = message.author.id;
-    Game = SelectGame(Words, Numbers, Gambler);
-
-    return;
+    return Phrases;
 }
 
-function SendResponseMessage(WonGame, AmountDifference) {
+function GenerateResultMessage(WonGame, AmountDifference) {
     AmountDifference = Math.abs(AmountDifference);
 
     if (WonGame) {
@@ -198,92 +134,106 @@ function SendResponseMessage(WonGame, AmountDifference) {
         // console.log(ReplyMessage);
     }
 
-    UserMessage.reply(ReplyMessage);
+    return ReplyMessage;
 }
 
-//ADD GAMES HERE AND TO /src/games FOLDER. REQUIRE AT TOP
-function SelectGame(Words, Numbers, Gambler) {
-    let HasWonTheGame = false;
-    let AmountDifference = 0;
-    let Wager;
+function SendHelpMessage() {
+    ReplyMessage = 'Welcome to CasinoBot! I am here to serve all your gambling needs from the comfort of your discord server. Use --balance to see your current balance!\n\nList of Games:\nSlots: "!gamble slots {amount to wager} {number of lines (1-5)}"\n Wager amount is multiplied by number of lines.\n\nRoulette: "!gamble roulette {amount to wager} {"red", "black"}\n\nHappy Hunting!';
+    UserMessage.reply(ReplyMessage);
+    return;
+}
 
+
+function RespondWith(Message) {
+    UserMessage.reply(Message);
+    return;
+};
+
+// returns True if NO errors in message, add more things to this check as I think of/come across them
+function IsValidMessage(PhraseList) {
     
+    if(!PhraseList || !(typeof(PhraseList[0]) === "string")) {
+        SendHelpMessage();
+        return false;
+    }
+
+    return true;
+}
 
 
+//ADD GAMES HERE AND TO /src/games FOLDER AND REQUIRE ^^^
+function ExecuteGame(Phrases) {
+    let FirstWord = Phrases.shift();
+    let Wager = Number(Phrases.shift());
+    console.log(typeof(Wager));
 
-    if (Words) {
-        let FirstWord = Words[0];
-        //console.log(FirstWord);
-
-        if (Numbers){
-            Wager = Number(Numbers[0]); //wager is always first number
-        }
-        else {
-            ReplyMessage = 'Use --help for more information.';
-            UserMessage.reply(ReplyMessage);
+    //error checking
+    switch (true) {
+        case !FirstWord:
+            SendHelpMessage();
             return;
-        }
+        case isNaN(Wager):
+            RespondWith('Please enter a number to bet. "!gamble --help" for more information.');
+            return;
+    }
 
-    
-    switch(FirstWord) {
+
+    switch (FirstWord) {
+        case '--help':
+            SendHelpMessage();
+            return;
+
+        case '--balance':
+            GetNewBalance(Gambler);
+            return;
         case 'slots':
-        // template input message: !gamble slots {Wager (per line)} {Lines}
-
-            let Lines = Number(Numbers[1]);
-            if (Lines > 5 || Lines < 1 || !Lines) {
-                ReplyMessage = "Invalid number of lines. Please input a number between 1 and 5. Use --help for more information.";
-                UserMessage.reply(ReplyMessage);
+            Lines = Number(Phrases.shift());
+            if (isNaN(Lines) || Lines > 5 || Lines < 1) {
+                RespondWith('Please enter a valid number of lines. Slots command is: "!gamble slots {wager} {lines 1-5}". Use "!gamble --help" for more information.');
                 return;
             }
-            // else {console.log(`Playing ${Lines} lines`)}
             [HasWonTheGame, AmountDifference, AddToMessage] = SLOTS.play(Wager, Lines);
-            
-
-            // use async/promises for this? removing "current balance" from SendResponseMessage for now...
-            UpdateBalance(Gambler, AmountDifference);
-
-            ReplyMessage += AddToMessage;
-
-            SendResponseMessage(HasWonTheGame, AmountDifference);
             break;
         case 'roulette':
-        // template input message !gamble roulette {Wager} {color(red/black)}
-            Color = Words[1];
-
-            if (!(['red','black'].includes(Color))) {
-                console.log('invalid roulette choice');
-                ReplyMessage = "Invalid choice. Please choose either red or black. Use --help for more information.";
-                UserMessage.reply(ReplyMessage);
-                return;
+            Color = Phrases.shift();
+            if (!(['red', 'black'].includes(Color))) {
+                //console.log('invalid roulette choice');
+                RespondWith('Invalid color choice. Roulette command is: "!gamble roulette {wager} {red/black}". "!gamble --help" for more information.');
+                break;
             }
-
             [HasWonTheGame, AmountDifference, AddToMessage] = ROULETTE.play(Wager, Color);
+            break;
+        default:
+            SendHelpMessage();
+            return;
 
-            ReplyMessage += AddToMessage;
-
-            UpdateBalance(Gambler, AmountDifference);
-
-            SendResponseMessage(HasWonTheGame, AmountDifference);
-            break;    
-        }
     }
-    else {
-        ReplyMessage = 'Send !gamble --help for more information';
-        UserMessage.reply(ReplyMessage);
-    }
+    ReplyMessage += AddToMessage;
+
+    UpdateBalance(Gambler, AmountDifference);
+
+    RespondWith(GenerateResultMessage(HasWonTheGame, AmountDifference));
+
+    return;
 }
 
+//-----------------------DISCORD-CLIENT-ACTIONS-------------------------------------
 
-
-
-//CLIENT 
+// client object has permissions (intents)
+const client = new Client({
+    intents: [
+        IntentsBitField.Flags.Guilds,
+        IntentsBitField.Flags.GuildMembers,
+        IntentsBitField.Flags.GuildMessages,
+        IntentsBitField.Flags.MessageContent,
+    ]
+});
 
 client.on('ready', (cli) => {
     console.log(`${cli.user.tag} wants you to gamble.`) //startup message
 })
 
 client.on('messageCreate', (message) => {
-    UserMessage = message;
     
     if (message.author.bot) {
         return; //robots don't gamble
@@ -291,39 +241,43 @@ client.on('messageCreate', (message) => {
 
     //use .match for this instead?
     let BeginningOfMessage = message.content.slice(0,7);
-    if (BeginningOfMessage === '!gamble') {
+    if (BeginningOfMessage === '!gambl3') {
+        UserMessage = message;
+        Gambler = message.author.id;
         ReplyMessage = '';
-        ParseMessage(message);
-    }
-    return
+        MessagePhrases = ParseMessage(message);
+    } else {
+        return
+    };
+
+    if(IsValidMessage(MessagePhrases)){
+        ExecuteGame(MessagePhrases);
+    };
+    return;
 });
 
 
 
-//LOGIN
+//-----------------------LOGIN-------------------------------------
+
+
+//PUT TOKEN IN TEXT FILE BY ITSELF
+function GetToken(callback) {
+    fs.readFile(TOKENFILE, 'utf-8', function GetFileContent(err, data) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        DiscordBotToken = data;
+        callback();
+    })
+}
+
+
+// callback for GetToken, gives login token to client once it is read from file
+function ClientLogin() {
+    client.login(DiscordBotToken);
+    return
+}
 
 LoginDiscordBot = GetToken(ClientLogin);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
