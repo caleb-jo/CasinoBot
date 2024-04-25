@@ -164,8 +164,8 @@ function IsValidMessage(PhraseList) {
             SendHelpMessage();
             return false;
 
-        case (PhraseList[1] != PhraseList[1]):
-        case (PhraseList[1] <= 0):
+        case (Number(PhraseList[1]) != Number(PhraseList[1])):
+        case (Number(PhraseList[1]) <= 0):
             RespondWith("Wager must be a positive number");
             return false;
     }
@@ -239,7 +239,7 @@ client.on('messageCreate', (message) => {
 
     //use .match for this instead?
     let BeginningOfMessage = message.content.slice(0,7);
-    if (BeginningOfMessage === '!gambl3') {
+    if (BeginningOfMessage === '!gamble') {
         UserMessage = message;
         Player = message.author;
         ReplyMessage = '';
@@ -271,7 +271,7 @@ client.on('messageCreate', (message) => {
 //-----------------------LOGIN-------------------------------------
 
 
-//PUT TOKEN IN TEXT FILE BY ITSELF
+//PUT TOKEN IN TEXT FILE BY ITSELF, MAKE SURE TO ADD TO .GITIGNORE
 function GetToken(callback) {
     fs.readFile(TOKENFILE, 'utf-8', function GetFileContent(err, data) {
         if (err) {
