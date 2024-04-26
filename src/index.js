@@ -124,6 +124,8 @@ function ParseMessage(message) {
     return Phrases;
 };
 
+
+
 function IsValidMessage(PhraseList) {
     // returns True if NO errors in message, add more things to this check as I think of/come across them
 
@@ -133,8 +135,9 @@ function IsValidMessage(PhraseList) {
         case (typeof(PhraseList[0]) != "string"):
             SendHelpMessage();
             return false;
-
-        case (PhraseList[1] != PhraseList[1]):
+        case (PhraseList[0].slice(0,2) === '--'):
+            break;
+        case (Number(PhraseList[1]) != Number(PhraseList[1])):
         case (Number(PhraseList[1]) <= 0):
             RespondWith("Wager must be a positive number");
             return false;
@@ -209,7 +212,7 @@ client.on('messageCreate', (message) => {
 
     //use .match for this instead?
     let BeginningOfMessage = message.content.slice(0,7);
-    if (BeginningOfMessage === '!gamble') {
+    if (BeginningOfMessage === '!gambl3') {
         UserMessage = message;
         Player = message.author;
         ReplyMessage = '';
