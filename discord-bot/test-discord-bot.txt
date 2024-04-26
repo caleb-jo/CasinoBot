@@ -1,0 +1,3 @@
+
+oauth2_link
+https://discord.com/oauth2/authorize?client_id=1230262997717483614&permissions=1084479764544&scope=bot

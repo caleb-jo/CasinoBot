@@ -164,7 +164,7 @@ function IsValidMessage(PhraseList) {
             SendHelpMessage();
             return false;
 
-        case (Number(PhraseList[1]) != Number(PhraseList[1])):
+        case (PhraseList[1] != PhraseList[1]):
         case (Number(PhraseList[1]) <= 0):
             RespondWith("Wager must be a positive number");
             return false;
