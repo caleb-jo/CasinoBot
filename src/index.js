@@ -7,6 +7,7 @@ const fs = require('fs');
 // MODULES (GAMES)
 const SLOTS = require('./games/slots');
 const ROULETTE = require('./games/roulette');
+const BLACKJACK = require('./games/blackjack');
 
 // FILES
 const TOKENFILE = './token/test-token.txt';
@@ -178,6 +179,8 @@ function ExecuteGame(Player, Phrases) {
             }
             [HasWonTheGame, AmountDifference, AddToMessage] = ROULETTE.play(Wager, Color);
             break;
+        case 'blackjack':
+            [HasWonTheGame, AmountDifference, AddToMessage] = BLACKJACK.play(Wager)
         default:
             RespondWith('Sorry, that command was not recognized. Use "!gamble --help" for more information.');
             break;
