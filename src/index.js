@@ -215,12 +215,14 @@ client.on('messageCreate', (message) => {
 
     //use .match for this instead?
     let BeginningOfMessage = message.content.slice(0,7);
-    if (BeginningOfMessage === '!gambl3') {
+    if (BeginningOfMessage === '!gamble') {
         UserMessage = message;
         Player = message.author;
         ReplyMessage = '';
         MessagePhrases = ParseMessage(message);
-
+    } else if (BeginningOfMessage === '!MAfact') {
+        ReplyMessage = "example fact about Massachusetts"
+        RespondWith(ReplyMessage)
     } else {
         return;
     };
