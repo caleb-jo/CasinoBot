@@ -74,7 +74,32 @@ function UpdateBalance(user, amount=0) {
     return;
 };
 
+function GenerateMassachusettsFact(){
+        FactList = [
+            "First shot of the American Revolution was fired in Lexington (1775)",
+            "Massachusetts is the birthplace of 4 U.S. Presidents, John Adams, John Quincy Adams, John F. Kennedy, George H.W. Bush",
+            "Actor Steve Carell was born in Concord and raised in Acton",
+            "Former pro-wrestler-turned-actor John Cena was born in West Newbury",
+            "Actor Uma Thurman was born in Boston and raised in Amherst",
+            "The movie Jaws was filmed in Massachusetts",
+            "First state to legalize same-sex marriage (2004)",
+            "The first public beach in the United States is in Revere",
+            "Boston Common – first public park in America (1634)",
+            "The fried clam was invented at Woodman’s of Essex in 1916",
+            "Southeastern Massachusetts is the oldest cranberry growing region in the U.S",
+            "Fenway Park is the oldest ballpark in Major League Baseball (MLB) – 1912",
+            "The first basketball game was played in Springfield, in 1891",
+            "Volleyball was founded in Holyoke, Massachusetts in 1947.",
+            "First sewing machine was created in Boston by Elias Howe (1845)",
+            "Lake Chargoggagoggmanchauggagoggchaubunagungamaugg in Webster, is the lake with the longest name in the US",
+            "Massachusetts has over 1,500 miles (2,414 kilometers) of coastline",            
+        ]
 
+        SelectedFact = FactList[Math.floor(Math.random() * FactList.length)]
+
+        
+        return SelectedFact;
+};
 
 
 
@@ -222,7 +247,7 @@ client.on('messageCreate', (message) => {
         ReplyMessage = '';
         MessagePhrases = ParseMessage(message);
     } else if (BeginningOfMessage === '!MAfact') {
-        ReplyMessage = "here is an example fact about Massachusetts";
+        ReplyMessage = GenerateMassachusettsFact();
         RespondWith(ReplyMessage);
     } else {
         return;
