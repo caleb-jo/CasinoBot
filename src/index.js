@@ -12,6 +12,7 @@ const BLACKJACK = require('./games/blackjack');
 // FILES
 const TOKENFILE = './token/test-token.txt';
 const USERBALANCEFILE = './token/json/userbalance.json';
+const MASSFACTFILE = './token/json/massfact.txt';
 
 
 
@@ -221,8 +222,8 @@ client.on('messageCreate', (message) => {
         ReplyMessage = '';
         MessagePhrases = ParseMessage(message);
     } else if (BeginningOfMessage === '!MAfact') {
-        ReplyMessage = "example fact about Massachusetts"
-        RespondWith(ReplyMessage)
+        ReplyMessage = "here is an example fact about Massachusetts";
+        RespondWith(ReplyMessage);
     } else {
         return;
     };
