@@ -12,7 +12,7 @@ const BLACKJACK = require('./games/blackjack');
 // FILES
 const TOKENFILE = './token/test-token.txt';
 const USERBALANCEFILE = './token/json/userbalance.json';
-const MASSFACTFILE = './token/json/massfact.txt';
+const MASSFACTFILE = './games/massfact.txt';
 
 
 
